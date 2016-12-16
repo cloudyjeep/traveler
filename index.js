@@ -1,209 +1,181 @@
+const nodeActions = new Map();
+
+function newNodeAction( nodes, action ) {
+	let firstNode = nodes[0];
+	nodeActions.set( firstNode, action );
+	
+	for( let i = 1; i < nodes.length; i++ ) {
+		nodeActions.set( nodes[i], action );
+	}
+}
+
+newNodeAction( [
+		"Program",
+		"BlockStatement",
+		"ClassBody" ], ( currentNode ) =>
+	currentNode.body );
+
+newNodeAction( [
+		"FunctionDeclaration",
+		"FunctionExpression",
+		"ArrowFunctionExpression" ], ( currentNode ) =>
+	[ currentNode.id, ...currentNode.params, currentNode.body ] );
+
+newNodeAction( [ "ExpressionStatement" ], ( currentNode ) =>
+	[ currentNode.expression ] );
+
+newNodeAction( [ "WithStatement" ], ( currentNode ) =>
+	[ currentNode.object, currentNode.body ] );
+
+newNodeAction( [
+		"ReturnStatement",
+		"ThrowStatement",
+		"UnaryExpression",
+		"UpdateExpression",
+		"SpreadElement",
+		"YieldExpression",
+		"RestElement",
+		"AwaitExpression" ], ( currentNode ) =>
+	[ currentNode.argument ] );
+
+newNodeAction( [ "LabeledStatement" ], ( currentNode ) =>
+	[ currentNode.label, currentNode.body ] );
+
+newNodeAction( [
+		"BreakStatement",
+		"ContinueStatement" ], ( currentNode ) =>
+	[ currentNode.label ] );
+
+newNodeAction( [
+		"IfStatement",
+		"ConditionalExpression" ], ( currentNode ) =>
+	[ currentNode.test, currentNode.consequent, currentNode.alternate ] );
+
+newNodeAction( [ "SwitchCase" ], ( currentNode ) =>
+	[ currentNode.test, ...currentNode.consequent ] );
+
+newNodeAction( [ "SwitchStatement" ], ( currentNode ) =>
+	[ currentNode.discriminant, ...currentNode.cases ] );
+
+newNodeAction( [ "TryStatement" ], ( currentNode ) =>
+	[ currentNode.block, currentNode.handler, currentNode.finalizer ] );
+
+newNodeAction( [ "CatchClause" ], ( currentNode ) =>
+	[ currentNode.param, currentNode.body ] );
+
+newNodeAction( [ "WhileStatement" ], ( currentNode ) =>
+	[ currentNode.test, currentNode.body ] );
+
+newNodeAction( [ "DoWhileStatement" ], ( currentNode ) =>
+	[ currentNode.body, currentNode.test ] );
+
+newNodeAction( [ "ForStatement" ], ( currentNode ) =>
+	[ currentNode.init, currentNode.test, currentNode.update, currentNode.body ] );
+
+newNodeAction( [
+		"ForInStatement",
+		"ForOfStatement" ], ( currentNode ) =>
+	[ currentNode.left, currentNode.right, currentNode.body ] );
+
+newNodeAction( [ "VariableDeclarator" ], ( currentNode ) =>
+	[ currentNode.id, currentNode.init ] );
+
+newNodeAction( [ "VariableDeclaration" ], ( currentNode ) =>
+	currentNode.declarations );
+
+newNodeAction( [
+		"ArrayExpression",
+		"ArrayPattern" ], ( currentNode ) =>
+	currentNode.elements );
+
+newNodeAction( [
+		"Property",
+		"AssignmentProperty",
+		"MethodDefinition" ], ( currentNode ) =>
+	[currentNode.key, currentNode.value ] );
+
+newNodeAction( [
+		"ObjectExpression",
+		"ObjectPattern" ], ( currentNode ) =>
+	currentNode.properties );
+
+newNodeAction( [
+		"BinaryExpression",
+		"AssignmentExpression",
+		"LogicalExpression" ], ( currentNode ) =>
+	[ currentNode.left, currentNode.right ] );
+
+newNodeAction( [ "MemberExpression" ], ( currentNode ) =>
+	[ currentNode.object, currentNode.property ] );
+
+newNodeAction( [ "CallExpression" ], ( currentNode ) =>
+	[ currentNode.callee, ... currentNode.arguments ] );
+
+newNodeAction( [ "SequenceExpression" ], ( currentNode ) =>
+	currentNode.expressions );
+
+newNodeAction( [ "TemplateLiteral" ], ( currentNode ) =>
+	[ ...currentNode.quasis, ...currentNode.expressions ] );
+
+newNodeAction( [
+		"ClassDeclaration",
+		"ClassExpression" ], ( currentNode ) =>
+	[ currentNode.id, currentNode.superClass, currentNode.body ] );
+
+newNodeAction( [ "MetaProperty" ], ( currentNode ) =>
+	[ currentNode.meta, currentNode.property ] );
+
+newNodeAction( [
+		"ImportSpecifier",
+		"ImportDefaultSpecifier",
+		"ImportNamespaceSpecifier" ], ( currentNode ) =>
+	[ currentNode.local ] );
+
+newNodeAction( [ "ImportDeclaration" ], ( currentNode ) =>
+	[ ...currentNode.specifiers, currentNode.source ] );
+
+newNodeAction( [ "ExportSpecifier" ], ( currentNode ) =>
+	[ currentNode.exported ] );
+
+newNodeAction( [ "ExportNamedDeclaration" ], ( currentNode ) =>
+	[ currentNode.declaration, ...currentNode.specifiers, currentNode.source ] );
+
+newNodeAction( [ "ExportDefaultDeclaration" ], ( currentNode ) =>
+	[ currentNode.declaration ] );
+
+newNodeAction( [ "ExportAllDeclaration" ], ( currentNode ) =>
+	[ currentNode.source ] );
+
 class Traveler {
 	constructor( root ) {
 		this.fringe = [ root ];
 	}
-
-	pushNodesToFringe( nodes ) {
-		for( let i = nodes.length - 1; i >= 0; i-- ) {
-			this.fringe.push( nodes[i] );
-		}
-	}
-
+	
 	getNext() {
 		let currentNode = this.fringe.pop();
-
-		switch( currentNode.type ) {
-		case "Program":
-		case "BlockStatement":
-		case "ClassBody":
-			this.pushNodesToFringe( currentNode.body );
-			break;
-		case "FunctionDeclaration":
-		case "FunctionExpression":
-		case "ArrowFunctionExpression":
-			this.fringe.push( currentNode.body );
-			this.pushNodesToFringe( currentNode.params );
-			if( currentNode.id !== null ) {
-				this.fringe.push( currentNode.id );
+		
+		let nodeAction = nodeActions.get( currentNode.type );
+		
+		if( nodeAction !== undefined ) {
+			let childNodes = nodeAction( currentNode );
+			
+			let i = childNodes.length;
+			
+			while( i-- > 0 ) {
+				let childNode = childNodes[ i ];
+				if( childNode !== null ) {
+					this.fringe.push( childNode );
+				}
 			}
-			break;
-		case "ExpressionStatement":
-			this.fringe.push( currentNode.expression );
-			break;
-		case "WithStatement":
-			this.fringe.push( currentNode.body );
-			this.fringe.push( currentNode.object );
-			break;
-		case "ReturnStatement":
-		case "ThrowStatement":
-		case "UnaryExpression":
-		case "UpdateExpression":
-		case "SpreadElement":
-		case "YieldExpression":
-		case "RestElement":
-		case "AwaitExpression":
-			if( currentNode.argument !== null ) {
-				this.fringe.push( currentNode.argument );
-			}
-			break;
-		case "LabeledStatement":
-			this.fringe.push( currentNode.body );
-			this.fringe.push( currentNode.label );
-			break;
-		case "BreakStatement":
-		case "ContinueStatement":
-			if( currentNode.label !== null ) {
-				this.fringe.push( currentNode.label );
-			}
-			break;
-		case "IfStatement":
-		case "ConditionalExpression":
-			if( currentNode.alternate !== null ) {
-				this.fringe.push( currentNode.alternate );
-			}
-			this.fringe.push( currentNode.consequent );
-			this.fringe.push( currentNode.test );
-			break;
-		case "SwitchCase":
-			this.pushNodesToFringe( currentNode.consequent );
-			if( currentNode.test !== null ) {
-				this.fringe.push( currentNode.test );
-			}
-			break;
-		case "SwitchStatement":
-			this.pushNodesToFringe( currentNode.cases );
-			this.fringe.push( currentNode.discriminant );
-			break;
-		case "CatchClause":
-			this.fringe.push( currentNode.body );
-			this.fringe.push( currentNode.param );
-			break;
-		case "TryStatement":
-			if( currentNode.finalizer !== null ) {
-				this.fringe.push( currentNode.finalizer );
-			}
-			if( currentNode.handler !== null ) {
-				this.fringe.push( currentNode.handler );
-			}
-			this.fringe.push( currentNode.block );
-			break;
-		case "WhileStatement":
-			this.fringe.push( currentNode.body );
-			this.fringe.push( currentNode.test );
-			break;
-		case "DoWhileStatement":
-			this.fringe.push( currentNode.test );
-			this.fringe.push( currentNode.body );
-			break;
-		case "ForStatement":
-			this.fringe.push( currentNode.body );
-			if( currentNode.update !== null ) {
-				this.fringe.push( currentNode.update );
-			}
-			if( currentNode.test !== null ) {
-				this.fringe.push( currentNode.test );
-			}
-			if( currentNode.init !== null ) {
-				this.fringe.push( currentNode.init );
-			}
-			break;
-		case "ForInStatement":
-		case "ForOfStatement":
-			this.fringe.push( currentNode.body );
-			this.fringe.push( currentNode.right );
-			this.fringe.push( currentNode.left );
-			break;
-		case "VariableDeclarator":
-			if( currentNode.init !== null ) {
-				this.fringe.push( currentNode.init );
-			}
-			this.fringe.push( currentNode.id );
-			break;
-		case "VariableDeclaration":
-			this.pushNodesToFringe( currentNode.declarations );
-			break;
-		case "ArrayExpression":
-		case "ArrayPattern":
-			let elements = currentNode.elements.filter( ( element ) => element !== null );
-			this.pushNodesToFringe( elements );
-			break;
-		case "Property":
-		case "AssignmentProperty":
-		case "MethodDefinition":
-			this.fringe.push( currentNode.value );
-			this.fringe.push( currentNode.key );
-			break;
-		case "ObjectExpression":
-		case "ObjectPattern":
-			this.pushNodesToFringe( currentNode.properties );
-			break;
-		case "BinaryExpression":
-		case "AssignmentExpression":
-		case "LogicalExpression":
-			this.fringe.push( currentNode.right );
-			this.fringe.push( currentNode.left );
-			break;
-		case "MemberExpression":
-			this.fringe.push( currentNode.property );
-			this.fringe.push( currentNode.object );
-			break;
-		case "CallExpression":
-			this.pushNodesToFringe( currentNode.arguments );
-			this.fringe.push( currentNode.callee );
-			break;
-		case "SequenceExpression":
-			this.pushNodesToFringe( currentNode.expressions );
-			break;
-		case "TemplateLiteral":
-			this.pushNodesToFringe( currentNode.expressions );
-			this.pushNodesToFringe( currentNode.quasis );
-			break;
-		case "ClassDeclaration":
-		case "ClassExpression":
-			this.fringe.push( currentNode.body );
-			if( currentNode.superClass !== null ) {
-				this.fringe.push( currentNode.superClass );
-			}
-			if( currentNode.id !== null ) {
-				this.fringe.push( currentNode.id );
-			}
-			break;
-		case "MetaProperty":
-			this.fringe.push( currentNode.property );
-			this.fringe.push( currentNode.meta );
-			break;
-		case "ImportSpecifier":
-		case "ImportDefaultSpecifier":
-		case "ImportNamespaceSpecifier":
-			this.fringe.push( currentNode.local );
-			break;
-		case "ImportDeclaration":
-			this.fringe.push( currentNode.source );
-			this.pushNodesToFringe( currentNode.specifiers );
-			break;
-		case "ExportSpecifier":
-			this.fringe.push( currentNode.exported );
-			break;
-		case "ExportNamedDeclaration":
-			this.fringe.push( currentNode.source );
-			this.pushNodesToFringe( currentNode.specifiers );
-			this.fringe.push( currentNode.declaration );
-			break;
-		case "ExportDefaultDeclaration":
-			this.fringe.push( currentNode.declaration );
-			break;
-		case "ExportAllDeclaration":
-			this.fringe.push( currentNode.source );
-			break;
 		}
-
+		
 		return currentNode;
 	}
-
+	
 	isDone() {
 		return this.fringe.length === 0;
 	}
-
+	
 	next() {
 		let isDone = this.isDone();
 		return {
@@ -212,7 +184,7 @@ class Traveler {
 			done: isDone
 		};
 	}
-
+	
 	[Symbol.iterator]() {
 		return this;
 	}
