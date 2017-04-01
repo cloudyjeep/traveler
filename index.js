@@ -1,11 +1,8 @@
 const nodeActions = new Map();
 
 function newNodeAction( nodes, action ) {
-	let firstNode = nodes[0];
-	nodeActions.set( firstNode, action );
-	
-	for( let i = 1; i < nodes.length; i++ ) {
-		nodeActions.set( nodes[i], action );
+	for( let node of nodes ) {
+		nodeActions.set( node, action );
 	}
 }
 
