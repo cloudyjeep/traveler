@@ -106,7 +106,7 @@ newNodeAction( [ "MemberExpression" ], ( currentNode ) =>
 	[ currentNode.object, currentNode.property ] );
 
 newNodeAction( [ "CallExpression" ], ( currentNode ) =>
-	[ currentNode.callee, ... currentNode.arguments ] );
+	[ currentNode.callee, ...currentNode.arguments ] );
 
 newNodeAction( [ "SequenceExpression" ], ( currentNode ) =>
 	currentNode.expressions );
