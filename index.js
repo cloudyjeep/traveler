@@ -1,147 +1,125 @@
 const nodeActions = new Map();
 
-function newNodeAction( nodes, action ) {
+function newNodeAction( action, ...nodes ) {
 	for( let node of nodes ) {
 		nodeActions.set( node, action );
 	}
 }
 
-newNodeAction( [
-		"Program",
-		"BlockStatement",
-		"ClassBody" ], ( currentNode ) =>
-	currentNode.body );
+newNodeAction( node => node.body,
+	"Program",
+	"BlockStatement",
+	"ClassBody" );
 
-newNodeAction( [
-		"FunctionDeclaration",
-		"FunctionExpression",
-		"ArrowFunctionExpression" ], ( currentNode ) =>
-	[ currentNode.id, ...currentNode.params, currentNode.body ] );
+newNodeAction( node => [ node.id, ...node.params, node.body ], 
+	"FunctionDeclaration",
+	"FunctionExpression",
+	"ArrowFunctionExpression" );
 
-newNodeAction( [ "ExpressionStatement" ], ( currentNode ) =>
-	[ currentNode.expression ] );
+newNodeAction( node => [ node.expression ],
+	"ExpressionStatement" );
 
-newNodeAction( [ "WithStatement" ], ( currentNode ) =>
-	[ currentNode.object, currentNode.body ] );
+newNodeAction( node => [ node.object, node.body ],
+	"WithStatement" );
 
-newNodeAction( [
-		"ReturnStatement",
-		"ThrowStatement",
-		"UnaryExpression",
-		"UpdateExpression",
-		"SpreadElement",
-		"YieldExpression",
-		"RestElement",
-		"AwaitExpression" ], ( currentNode ) =>
-	[ currentNode.argument ] );
+newNodeAction( node => [ node.argument ], 
+	"ReturnStatement",
+	"ThrowStatement",
+	"UnaryExpression",
+	"UpdateExpression",
+	"SpreadElement",
+	"YieldExpression",
+	"RestElement",
+	"AwaitExpression" );
 
-newNodeAction( [ "LabeledStatement" ], ( currentNode ) =>
-	[ currentNode.label, currentNode.body ] );
+newNodeAction( node => [ node.label, node.body ],
+	"LabeledStatement" );
 
-newNodeAction( [
-		"BreakStatement",
-		"ContinueStatement" ], ( currentNode ) =>
-	[ currentNode.label ] );
+newNodeAction( node => [ node.label ], 
+	"BreakStatement",
+	"ContinueStatement" );
 
-newNodeAction( [
-		"IfStatement",
-		"ConditionalExpression" ], ( currentNode ) =>
-	[ currentNode.test, currentNode.consequent, currentNode.alternate ] );
+newNodeAction( node => [ node.test, node.consequent, node.alternate ], 
+	"IfStatement",
+	"ConditionalExpression" );
 
-newNodeAction( [ "SwitchCase" ], ( currentNode ) =>
-	[ currentNode.test, ...currentNode.consequent ] );
+newNodeAction( node => [ node.test, ...node.consequent ],
+	"SwitchCase" );
 
-newNodeAction( [ "SwitchStatement" ], ( currentNode ) =>
-	[ currentNode.discriminant, ...currentNode.cases ] );
+newNodeAction( node => [ node.discriminant, ...node.cases ],
+	"SwitchStatement" );
 
-newNodeAction( [ "TryStatement" ], ( currentNode ) =>
-	[ currentNode.block, currentNode.handler, currentNode.finalizer ] );
+newNodeAction( node => [ node.block, node.handler, node.finalizer ],
+	"TryStatement" );
 
-newNodeAction( [ "CatchClause" ], ( currentNode ) =>
-	[ currentNode.param, currentNode.body ] );
+newNodeAction( node => [ node.param, node.body ],
+	"CatchClause" );
 
-newNodeAction( [ "WhileStatement" ], ( currentNode ) =>
-	[ currentNode.test, currentNode.body ] );
+newNodeAction( node => [ node.test, node.body ],
+	"WhileStatement" );
 
-newNodeAction( [ "DoWhileStatement" ], ( currentNode ) =>
-	[ currentNode.body, currentNode.test ] );
+newNodeAction( node => [ node.body, node.test ],
+	"DoWhileStatement" );
 
-newNodeAction( [ "ForStatement" ], ( currentNode ) =>
-	[ currentNode.init, currentNode.test, currentNode.update, currentNode.body ] );
+newNodeAction( node => [ node.init, node.test, node.update, node.body ],
+	"ForStatement" );
 
-newNodeAction( [
-		"ForInStatement",
-		"ForOfStatement" ], ( currentNode ) =>
-	[ currentNode.left, currentNode.right, currentNode.body ] );
+newNodeAction( node => [ node.left, node.right, node.body ], 
+	"ForInStatement",
+	"ForOfStatement" );
 
-newNodeAction( [ "VariableDeclarator" ], ( currentNode ) =>
-	[ currentNode.id, currentNode.init ] );
+newNodeAction( node => [ node.id, node.init ],
+	"VariableDeclarator" );
 
-newNodeAction( [ "VariableDeclaration" ], ( currentNode ) =>
-	currentNode.declarations );
+newNodeAction( node => node.declarations,
+	"VariableDeclaration" );
 
-newNodeAction( [
-		"ArrayExpression",
-		"ArrayPattern" ], ( currentNode ) =>
-	currentNode.elements );
+newNodeAction( node => node.elements, 
+	"ArrayExpression",
+	"ArrayPattern" );
 
-newNodeAction( [
-		"Property",
-		"AssignmentProperty",
-		"MethodDefinition" ], ( currentNode ) =>
-	[currentNode.key, currentNode.value ] );
+newNodeAction( node => [ node.key, node.value ], 
+	"Property",
+	"AssignmentProperty",
+	"MethodDefinition" );
 
-newNodeAction( [
-		"ObjectExpression",
-		"ObjectPattern" ], ( currentNode ) =>
-	currentNode.properties );
+newNodeAction( node => node.properties, 
+	"ObjectExpression",
+	"ObjectPattern" );
 
-newNodeAction( [
-		"BinaryExpression",
-		"AssignmentExpression",
-		"LogicalExpression" ], ( currentNode ) =>
-	[ currentNode.left, currentNode.right ] );
+newNodeAction( node => [ node.left, node.right ], 
+	"BinaryExpression",
+	"AssignmentExpression",
+	"LogicalExpression" );
 
-newNodeAction( [ "MemberExpression" ], ( currentNode ) =>
-	[ currentNode.object, currentNode.property ] );
+newNodeAction( node => [ node.object, node.property ], "MemberExpression" );
 
-newNodeAction( [ "CallExpression" ], ( currentNode ) =>
-	[ currentNode.callee, ...currentNode.arguments ] );
+newNodeAction( node => [ node.callee, ...node.arguments ], "CallExpression" );
 
-newNodeAction( [ "SequenceExpression" ], ( currentNode ) =>
-	currentNode.expressions );
+newNodeAction( node => node.expressions, "SequenceExpression" );
 
-newNodeAction( [ "TemplateLiteral" ], ( currentNode ) =>
-	[ ...currentNode.quasis, ...currentNode.expressions ] );
+newNodeAction( node => [ ...node.quasis, ...node.expressions ], "TemplateLiteral" );
 
-newNodeAction( [
+newNodeAction( node => [ node.id, node.superClass, node.body ], 
 		"ClassDeclaration",
-		"ClassExpression" ], ( currentNode ) =>
-	[ currentNode.id, currentNode.superClass, currentNode.body ] );
+		"ClassExpression" );
 
-newNodeAction( [ "MetaProperty" ], ( currentNode ) =>
-	[ currentNode.meta, currentNode.property ] );
+newNodeAction( node => [ node.meta, node.property ], "MetaProperty" );
 
-newNodeAction( [
+newNodeAction( node => [ node.local ], 
 		"ImportSpecifier",
 		"ImportDefaultSpecifier",
-		"ImportNamespaceSpecifier" ], ( currentNode ) =>
-	[ currentNode.local ] );
+		"ImportNamespaceSpecifier" );
 
-newNodeAction( [ "ImportDeclaration" ], ( currentNode ) =>
-	[ ...currentNode.specifiers, currentNode.source ] );
+newNodeAction( node => [ ...node.specifiers, node.source ], "ImportDeclaration" );
 
-newNodeAction( [ "ExportSpecifier" ], ( currentNode ) =>
-	[ currentNode.exported ] );
+newNodeAction( node => [ node.exported ], "ExportSpecifier" );
 
-newNodeAction( [ "ExportNamedDeclaration" ], ( currentNode ) =>
-	[ currentNode.declaration, ...currentNode.specifiers, currentNode.source ] );
+newNodeAction( node => [ node.declaration, ...node.specifiers, node.source ], "ExportNamedDeclaration" );
 
-newNodeAction( [ "ExportDefaultDeclaration" ], ( currentNode ) =>
-	[ currentNode.declaration ] );
+newNodeAction( node => [ node.declaration ], "ExportDefaultDeclaration" );
 
-newNodeAction( [ "ExportAllDeclaration" ], ( currentNode ) =>
-	[ currentNode.source ] );
+newNodeAction( node => [ node.source ], "ExportAllDeclaration" );
 
 class Traveler {
 	constructor( root ) {
