@@ -2,6 +2,9 @@
   "name": "traveler",
   "version": "1.0.0",
   "description": "Small, fast, ES6-iterable module for walking an EStree ast in order of syntactical appearance",
+  "files": [
+    "index.js"
+  ],
   "main": "index.js",
   "author": "Trevor Behlman",
   "license": "MIT"
