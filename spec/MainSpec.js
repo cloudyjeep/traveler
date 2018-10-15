@@ -1,7 +1,7 @@
-let Traveler = require( "../index" );
+const Traveler = require( "../index" );
 
 function verify( root, expectedNodeOrder ) {
-	let programNode = {
+	const programNode = {
 		type: "Program",
 		body: [
 			root,
@@ -9,7 +9,7 @@ function verify( root, expectedNodeOrder ) {
 		]
 	};
 	
-	let traveler = new Traveler( programNode );
+	const traveler = new Traveler( programNode );
 	
 	expectedNodeOrder = [ programNode, root ].concat( expectedNodeOrder );
 	expectedNodeOrder.push( programNode.body[1] );
@@ -17,7 +17,7 @@ function verify( root, expectedNodeOrder ) {
 	const iterator = traveler[ Symbol.iterator ]();
 	let iteratorResult = iterator.next();
 	
-	for( let node of expectedNodeOrder ) {
+	for( const node of expectedNodeOrder ) {
 		if( iteratorResult.done ) {
 			fail( "Returned fewer nodes than expected" );
 			return;
@@ -34,7 +34,7 @@ function verify( root, expectedNodeOrder ) {
 
 describe( "Traveler", () => {
 	it( "initializes", () => {
-		let traveler = new Traveler( {
+		const traveler = new Traveler( {
 			type: "Program",
 			body: []
 		} );
@@ -45,19 +45,19 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns only node", () => {
-		let programNode = {
+		const programNode = {
 			type: "Program",
 			body: []
 		};
 		
-		let traveler = new Traveler( programNode );
+		const traveler = new Traveler( programNode );
 		
 		expect( traveler.next().value ).toBe( programNode );
 		expect( traveler.next().done ).toBe( true );
 	} );
 	
 	it( "returns children of Program", () => {
-		let programNode = {
+		const programNode = {
 			type: "Program",
 			body: [
 				{ type: "EmptyStatement" },
@@ -65,7 +65,7 @@ describe( "Traveler", () => {
 			]
 		};
 		
-		let traveler = new Traveler( programNode );
+		const traveler = new Traveler( programNode );
 		
 		expect( traveler.next().value ).toBe( programNode );
 		expect( traveler.next().value ).toBe( programNode.body[0] );
@@ -74,7 +74,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of BlockStatement", () => {
-		let root = {
+		const root = {
 			type: "BlockStatement",
 			body: [
 				{ type: "EmptyStatement" },
@@ -86,7 +86,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of FunctionDeclaration", () => {
-		let root = {
+		const root = {
 			type: "FunctionDeclaration",
 			id: { type: "Identifier" },
 			params: [
@@ -103,7 +103,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of FunctionExpression", () => {
-		let root = {
+		const root = {
 			type: "FunctionExpression",
 			id: null,
 			params: [
@@ -120,7 +120,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ExpressionStatement", () => {
-		let root = {
+		const root = {
 			type: "ExpressionStatement",
 			expression: { type: "Literal" }
 		};
@@ -129,7 +129,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of WithStatement", () => {
-		let root = {
+		const root = {
 			type: "WithStatement",
 			object: { type: "Literal" },
 			body: { type: "EmptyStatement" }
@@ -139,7 +139,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ReturnStatement", () => {
-		let root = {
+		const root = {
 			type: "ReturnStatement",
 			argument: { type: "Literal" }
 		};
@@ -148,7 +148,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of LabeledStatement", () => {
-		let root = {
+		const root = {
 			type: "LabeledStatement",
 			label: { type: "Identifier" },
 			body: { type: "EmptyStatement" }
@@ -158,7 +158,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of BreakStatement", () => {
-		let root = {
+		const root = {
 			type: "BreakStatement",
 			label: { type: "Identifier" }
 		};
@@ -167,7 +167,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of BreakStatement with no label", () => {
-		let root = {
+		const root = {
 			type: "BreakStatement",
 			label: null
 		};
@@ -176,7 +176,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ContinueStatement", () => {
-		let root = {
+		const root = {
 			type: "ContinueStatement",
 			label: { type: "Identifier" }
 		};
@@ -185,7 +185,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ContinueStatement with no label", () => {
-		let root = {
+		const root = {
 			type: "ContinueStatement",
 			label: null
 		};
@@ -194,7 +194,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of IfStatement", () => {
-		let root = {
+		const root = {
 			type: "IfStatement",
 			test: { type: "Literal" },
 			consequent: { type: "EmptyStatement" },
@@ -205,7 +205,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of IfStatement with no alternate", () => {
-		let root = {
+		const root = {
 			type: "IfStatement",
 			test: { type: "Literal" },
 			consequent: { type: "EmptyStatement" },
@@ -216,7 +216,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of SwitchCase", () => {
-		let root = {
+		const root = {
 			type: "SwitchCase",
 			test: { type: "Literal" },
 			consequent: [
@@ -229,7 +229,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of SwitchCase with no test", () => {
-		let root = {
+		const root = {
 			type: "SwitchCase",
 			test: null,
 			consequent: [
@@ -242,7 +242,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of SwitchStatement", () => {
-		let root = {
+		const root = {
 			type: "SwitchStatement",
 			discriminant: { type: "Literal" },
 			cases: [
@@ -263,7 +263,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ThrowStatement", () => {
-		let root = {
+		const root = {
 			type: "ThrowStatement",
 			argument: {
 				type: "Literal",
@@ -275,7 +275,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of CatchClause", () => {
-		let root = {
+		const root = {
 			type: "CatchClause",
 			param: { type: "Identifier" },
 			body: {
@@ -288,7 +288,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of TryStatement", () => {
-		let root = {
+		const root = {
 			type: "TryStatement",
 			block: {
 				type: "BlockStatement",
@@ -312,7 +312,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of TryStatement with no finalizer", () => {
-		let root = {
+		const root = {
 			type: "TryStatement",
 			block: {
 				type: "BlockStatement",
@@ -333,7 +333,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of TryStatement with no handler", () => {
-		let root = {
+		const root = {
 			type: "TryStatement",
 			block: {
 				type: "BlockStatement",
@@ -350,7 +350,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of VariableDeclarator", () => {
-		let root = {
+		const root = {
 			type: "VariableDeclarator",
 			id: { type: "Identifier" },
 			init: { type: "Literal" }
@@ -360,7 +360,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of VariableDeclarator with no initializer", () => {
-		let root = {
+		const root = {
 			type: "VariableDeclarator",
 			id: { type: "Identifier" },
 			init: null
@@ -370,7 +370,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of VariableDeclaration", () => {
-		let root = {
+		const root = {
 			type: "VariableDeclaration",
 			declarations: [
 				{
@@ -390,7 +390,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of WhileStatement", () => {
-		let root = {
+		const root = {
 			type: "WhileStatement",
 			test: { type: "Literal" },
 			body: { type: "EmptyStatement" }
@@ -400,7 +400,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of DoWhileStatement", () => {
-		let root = {
+		const root = {
 			type: "DoWhileStatement",
 			body: { type: "EmptyStatement" },
 			test: { type: "Literal" }
@@ -410,7 +410,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForStatement", () => {
-		let root = {
+		const root = {
 			type: "ForStatement",
 			init: { type: "Literal" },
 			test: { type: "Literal" },
@@ -422,7 +422,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForStatement with no initialization", () => {
-		let root = {
+		const root = {
 			type: "ForStatement",
 			init: null,
 			test: { type: "Literal" },
@@ -434,7 +434,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForStatement with no test", () => {
-		let root = {
+		const root = {
 			type: "ForStatement",
 			init: { type: "Literal" },
 			test: null,
@@ -446,7 +446,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForStatement with no update operations", () => {
-		let root = {
+		const root = {
 			type: "ForStatement",
 			init: { type: "Literal" },
 			test: { type: "Literal" },
@@ -458,7 +458,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForStatement with no paramaters", () => {
-		let root = {
+		const root = {
 			type: "ForStatement",
 			init: null,
 			test: null,
@@ -470,7 +470,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForInStatement", () => {
-		let root = {
+		const root = {
 			type: "ForInStatement",
 			left: { type: "Identifier" },
 			right: { type: "Identifier" },
@@ -481,7 +481,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ForOfStatement", () => {
-		let root = {
+		const root = {
 			type: "ForOfStatement",
 			left: { type: "Identifier" },
 			right: { type: "Identifier" },
@@ -492,7 +492,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ArrayExpression", () => {
-		let root = {
+		const root = {
 			type: "ArrayExpression",
 			elements: [
 				{ type: "Literal" },
@@ -505,7 +505,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of Property", () => {
-		let root = {
+		const root = {
 			type: "Property",
 			key: { type: "Identifier" },
 			value: { type: "Literal" }
@@ -515,7 +515,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of AssignmentProperty", () => {
-		let root = {
+		const root = {
 			type: "AssignmentProperty",
 			key: { type: "Identifier" },
 			value: { type: "Identifier" }
@@ -525,7 +525,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ObjectExpression", () => {
-		let root = {
+		const root = {
 			type: "ObjectExpression",
 			properties: [
 				{
@@ -545,7 +545,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of UpdateExpression", () => {
-		let root = {
+		const root = {
 			type: "UpdateExpression",
 			argument: { type: "Literal" }
 		};
@@ -554,7 +554,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of UnaryExpression", () => {
-		let root = {
+		const root = {
 			type: "UnaryExpression",
 			argument: { type: "Literal" }
 		};
@@ -563,7 +563,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of BinaryExpression", () => {
-		let root = {
+		const root = {
 			type: "BinaryExpression",
 			left: { type: "Literal" },
 			right: { type: "Literal" }
@@ -573,7 +573,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of AssignmentExpression", () => {
-		let root = {
+		const root = {
 			type: "AssignmentExpression",
 			left: { type: "Literal" },
 			right: { type: "Literal" }
@@ -583,7 +583,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of LogicalExpression", () => {
-		let root = {
+		const root = {
 			type: "LogicalExpression",
 			left: { type: "Literal" },
 			right: { type: "Literal" }
@@ -593,7 +593,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of MemberExpression", () => {
-		let root = {
+		const root = {
 			type: "MemberExpression",
 			object: { type: "Literal" },
 			property: { type: "Literal" }
@@ -603,7 +603,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ConditionalExpression", () => {
-		let root = {
+		const root = {
 			type: "ConditionalExpression",
 			test: { type: "Literal" },
 			consequent: { type: "EmptyStatement" },
@@ -614,7 +614,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of CallExpression", () => {
-		let root = {
+		const root = {
 			type: "CallExpression",
 			callee: { type: "Identifier" },
 			arguments: [
@@ -627,7 +627,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of SequenceExpression", () => {
-		let root = {
+		const root = {
 			type: "SequenceExpression",
 			expressions: [
 				{ type: "Identifier" },
@@ -639,7 +639,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of SpreadElement", () => {
-		let root = {
+		const root = {
 			type: "SpreadElement",
 			argument: { type: "Identifier" }
 		};
@@ -648,7 +648,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ArrowFunctionExpression", () => {
-		let root = {
+		const root = {
 			type: "ArrowFunctionExpression",
 			id: null,
 			params: [
@@ -662,7 +662,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of YieldExpression", () => {
-		let root = {
+		const root = {
 			type: "YieldExpression",
 			argument: { type: "Literal" }
 		};
@@ -671,7 +671,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of YieldExpression with no argument", () => {
-		let root = {
+		const root = {
 			type: "YieldExpression",
 			argument: null
 		};
@@ -680,7 +680,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of TemplateLiteral", () => {
-		let root = {
+		const root = {
 			type: "TemplateLiteral",
 			quasis: [
 				{ type: "TemplateElement" },
@@ -696,7 +696,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ObjectPattern", () => {
-		let root = {
+		const root = {
 			type: "ObjectPattern",
 			properties: [
 				{
@@ -716,7 +716,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ArrayPattern", () => {
-		let root = {
+		const root = {
 			type: "ArrayPattern",
 			elements: [
 				{ type: "Literal" },
@@ -729,7 +729,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of RestElement", () => {
-		let root = {
+		const root = {
 			type: "RestElement",
 			argument: { type: "Identifier" }
 		};
@@ -738,7 +738,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of MethodDefinition", () => {
-		let root = {
+		const root = {
 			type: "MethodDefinition",
 			key: { type: "Literal" },
 			value: {
@@ -756,7 +756,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ClassBody", () => {
-		let root = {
+		const root = {
 			type: "ClassBody",
 			superClass: null,
 			body: [
@@ -780,7 +780,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ClassDeclaration", () => {
-		let root = {
+		const root = {
 			type: "ClassDeclaration",
 			id: { type: "Identifier" },
 			superClass: { type: "Identifier" },
@@ -809,7 +809,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ClassDeclaration with no super class", () => {
-		let root = {
+		const root = {
 			type: "ClassDeclaration",
 			id: { type: "Identifier" },
 			superClass: null,
@@ -838,7 +838,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ClassExpression", () => {
-		let root = {
+		const root = {
 			type: "ClassExpression",
 			id: null,
 			superClass: { type: "Identifier" },
@@ -867,7 +867,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ClassExpression with no super class", () => {
-		let root = {
+		const root = {
 			type: "ClassExpression",
 			id: null,
 			superClass: null,
@@ -896,7 +896,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of MetaProperty", () => {
-		let root = {
+		const root = {
 			type: "MetaProperty",
 			meta: { type: "Identifier" },
 			property: { type: "Identifier" }
@@ -906,7 +906,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ImportSpecifier", () => {
-		let root = {
+		const root = {
 			type: "ImportSpecifier",
 			local: { type: "Identifier" }
 		};
@@ -915,7 +915,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ImportDefaultSpecifier", () => {
-		let root = {
+		const root = {
 			type: "ImportDefaultSpecifier",
 			local: { type: "Identifier" }
 		};
@@ -924,7 +924,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ImportNamespaceSpecifier", () => {
-		let root = {
+		const root = {
 			type: "ImportNamespaceSpecifier",
 			local: { type: "Identifier" }
 		};
@@ -933,7 +933,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ImportDeclaration", () => {
-		let root = {
+		const root = {
 			type: "ImportDeclaration",
 			specifiers: [
 				{
@@ -952,7 +952,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ExportSpecifier", () => {
-		let root = {
+		const root = {
 			type: "ExportSpecifier",
 			exported: { type: "Identifier" }
 		};
@@ -961,7 +961,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ExportNamedDeclaration", () => {
-		let root = {
+		const root = {
 			type: "ExportNamedDeclaration",
 			declaration: {
 				type: "FunctionDeclaration",
@@ -985,7 +985,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ExportDefaultDeclaration", () => {
-		let root = {
+		const root = {
 			type: "ExportDefaultDeclaration",
 			declaration: { type: "Literal" }
 		};
@@ -994,7 +994,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of ExportAllDeclaration", () => {
-		let root = {
+		const root = {
 			type: "ExportAllDeclaration",
 			source: { type: "Literal" }
 		};
@@ -1003,7 +1003,7 @@ describe( "Traveler", () => {
 	} );
 	
 	it( "returns children of AwaitExpression", () => {
-		let root = {
+		const root = {
 			type: "AwaitExpression",
 			argument: { type: "Literal" }
 		};

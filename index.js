@@ -1,7 +1,7 @@
 const nodeActions = new Map();
 
 function newNodeAction( action, ...nodes ) {
-	for( let node of nodes ) {
+	for( const node of nodes ) {
 		nodeActions.set( node, action );
 	}
 }
@@ -134,17 +134,17 @@ class Traveler {
 			};
 		}
 		
-		let currentNode = this.fringe.pop();
+		const currentNode = this.fringe.pop();
 		
-		let nodeAction = nodeActions.get( currentNode.type );
+		const nodeAction = nodeActions.get( currentNode.type );
 		
 		if( nodeAction !== undefined ) {
-			let childNodes = nodeAction( currentNode );
+			const childNodes = nodeAction( currentNode );
 			
 			let i = childNodes.length;
 			
 			while( i-- > 0 ) {
-				let childNode = childNodes[ i ];
+				const childNode = childNodes[ i ];
 				if( childNode !== null ) {
 					this.fringe.push( childNode );
 				}
