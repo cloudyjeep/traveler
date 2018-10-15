@@ -92,34 +92,44 @@ newNodeAction( node => [ node.left, node.right ],
 	"AssignmentExpression",
 	"LogicalExpression" );
 
-newNodeAction( node => [ node.object, node.property ], "MemberExpression" );
+newNodeAction( node => [ node.object, node.property ],
+	"MemberExpression" );
 
-newNodeAction( node => [ node.callee, ...node.arguments ], "CallExpression" );
+newNodeAction( node => [ node.callee, ...node.arguments ],
+	"CallExpression" );
 
-newNodeAction( node => node.expressions, "SequenceExpression" );
+newNodeAction( node => node.expressions,
+	"SequenceExpression" );
 
-newNodeAction( node => [ ...node.quasis, ...node.expressions ], "TemplateLiteral" );
+newNodeAction( node => [ ...node.quasis, ...node.expressions ],
+	"TemplateLiteral" );
 
 newNodeAction( node => [ node.id, node.superClass, node.body ], 
-		"ClassDeclaration",
-		"ClassExpression" );
+	"ClassDeclaration",
+	"ClassExpression" );
 
-newNodeAction( node => [ node.meta, node.property ], "MetaProperty" );
+newNodeAction( node => [ node.meta, node.property ],
+	"MetaProperty" );
 
 newNodeAction( node => [ node.local ], 
-		"ImportSpecifier",
-		"ImportDefaultSpecifier",
-		"ImportNamespaceSpecifier" );
+	"ImportSpecifier",
+	"ImportDefaultSpecifier",
+	"ImportNamespaceSpecifier" );
 
-newNodeAction( node => [ ...node.specifiers, node.source ], "ImportDeclaration" );
+newNodeAction( node => [ ...node.specifiers, node.source ],
+	"ImportDeclaration" );
 
-newNodeAction( node => [ node.exported ], "ExportSpecifier" );
+newNodeAction( node => [ node.exported ],
+	"ExportSpecifier" );
 
-newNodeAction( node => [ node.declaration, ...node.specifiers, node.source ], "ExportNamedDeclaration" );
+newNodeAction( node => [ node.declaration, ...node.specifiers, node.source ],
+	"ExportNamedDeclaration" );
 
-newNodeAction( node => [ node.declaration ], "ExportDefaultDeclaration" );
+newNodeAction( node => [ node.declaration ],
+	"ExportDefaultDeclaration" );
 
-newNodeAction( node => [ node.source ], "ExportAllDeclaration" );
+newNodeAction( node => [ node.source ],
+	"ExportAllDeclaration" );
 
 class Traveler {
 	constructor( root ) {
