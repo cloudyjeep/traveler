@@ -126,7 +126,14 @@ class Traveler {
 		this.fringe = [ root ];
 	}
 	
-	getNext() {
+	next() {
+		if( this.fringe.length === 0 ) {
+			return {
+				done: true,
+				value: undefined
+			};
+		}
+		
 		let currentNode = this.fringe.pop();
 		
 		let nodeAction = nodeActions.get( currentNode.type );
@@ -144,23 +151,13 @@ class Traveler {
 			}
 		}
 		
-		return currentNode;
-	}
-	
-	isDone() {
-		return this.fringe.length === 0;
-	}
-	
-	next() {
-		let isDone = this.isDone();
 		return {
-			value: isDone ? undefined : this.getNext(),
-			next: () => this.next(),
-			done: isDone
+			done: false,
+			value: currentNode
 		};
 	}
 	
-	[Symbol.iterator]() {
+	[ Symbol.iterator ]() {
 		return this;
 	}
 }

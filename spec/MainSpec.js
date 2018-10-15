@@ -14,14 +14,16 @@ function verify( root, expectedNodeOrder ) {
 	expectedNodeOrder = [ programNode, root ].concat( expectedNodeOrder );
 	expectedNodeOrder.push( programNode.body[1] );
 	
-	let iteratorResult = traveler[Symbol.iterator]().next();
+	const iterator = traveler[ Symbol.iterator ]();
+	let iteratorResult = iterator.next();
+	
 	for( let node of expectedNodeOrder ) {
 		if( iteratorResult.done ) {
 			fail( "Returned fewer nodes than expected" );
 			return;
 		}
 		expect( iteratorResult.value ).toBe( node );
-		iteratorResult = iteratorResult.next();
+		iteratorResult = iterator.next();
 	}
 	if( !iteratorResult.done ) {
 		fail( "Returned more nodes than expected" );
@@ -50,9 +52,8 @@ describe( "Traveler", () => {
 		
 		let traveler = new Traveler( programNode );
 		
-		expect( traveler.isDone() ).toBe( false );
-		expect( traveler.getNext() ).toBe( programNode );
-		expect( traveler.isDone() ).toBe( true );
+		expect( traveler.next().value ).toBe( programNode );
+		expect( traveler.next().done ).toBe( true );
 	} );
 	
 	it( "returns children of Program", () => {
@@ -66,13 +67,10 @@ describe( "Traveler", () => {
 		
 		let traveler = new Traveler( programNode );
 		
-		expect( traveler.isDone() ).toBe( false );
-		expect( traveler.getNext() ).toBe( programNode );
-		expect( traveler.isDone() ).toBe( false );
-		expect( traveler.getNext() ).toBe( programNode.body[0] );
-		expect( traveler.isDone() ).toBe( false );
-		expect( traveler.getNext() ).toBe( programNode.body[1] );
-		expect( traveler.isDone() ).toBe( true );
+		expect( traveler.next().value ).toBe( programNode );
+		expect( traveler.next().value ).toBe( programNode.body[0] );
+		expect( traveler.next().value ).toBe( programNode.body[1] );
+		expect( traveler.next().done ).toBe( true );
 	} );
 	
 	it( "returns children of BlockStatement", () => {
