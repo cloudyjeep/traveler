@@ -131,6 +131,9 @@ newNodeAction( node => [ node.declaration ],
 newNodeAction( node => [ node.source ],
 	"ExportAllDeclaration" );
 
+newNodeAction( node => [ node.left, node.right ],
+	"AssignmentPattern" );
+
 class Traveler {
 	constructor( root ) {
 		this.fringe = [ root ];

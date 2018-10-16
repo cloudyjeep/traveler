@@ -11,8 +11,7 @@ function verify( root, expectedNodeOrder ) {
 	
 	const traveler = new Traveler( programNode );
 	
-	expectedNodeOrder = [ programNode, root ].concat( expectedNodeOrder );
-	expectedNodeOrder.push( programNode.body[1] );
+	expectedNodeOrder = [ programNode, root, ...expectedNodeOrder, programNode.body[ 1 ] ];
 	
 	const iterator = traveler[ Symbol.iterator ]();
 	let iteratorResult = iterator.next();
@@ -1009,5 +1008,21 @@ describe( "Traveler", () => {
 		};
 		
 		verify( root, [ root.argument ] );
+	} );
+	
+	it( "returns children of AssignmentPattern", () => {
+		const root = {
+			type: "AssignmentPattern",
+			left: {
+				type: "ArrayPattern",
+				elements: [
+					{ type: "Identifier" },
+					{ type: "Identifier" }
+				]
+			},
+			right: { type: "Identifier" }
+		};
+		
+		verify( root, [ root.left, ...root.left.elements, root.right ] );
 	} );
 } );
